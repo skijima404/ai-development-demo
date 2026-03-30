@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: focus-time-timer
+  labels:
+    app: focus-time-timer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: focus-time-timer
+  template:
+    metadata:
+      labels:
+        app: focus-time-timer
+    spec:
+      containers:
+        - name: focus-time-timer
+          image: REPLACE_WITH_IMAGE
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: focus-time-timer
+  labels:
+    app: focus-time-timer
+spec:
+  selector:
+    app: focus-time-timer
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: focus-time-timer
+  labels:
+    app: focus-time-timer
+spec:
+  to:
+    kind: Service
+    name: focus-time-timer
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

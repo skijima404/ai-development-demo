@@ -1,0 +1,152 @@
+:root {
+  color: #111111;
+  background: #ececec;
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  line-height: 1.4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.timer-card {
+  width: min(100%, 420px);
+  background: #ffffff;
+  border: 1px solid #bdbdbd;
+  padding: 24px;
+  box-shadow: none;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.subtitle {
+  margin: 8px 0 24px;
+  color: #4a4a4a;
+  font-size: 0.95rem;
+}
+
+.status-box,
+.remaining-box,
+.message-box {
+  border: 1px solid #bdbdbd;
+  padding: 12px;
+  background: #f8f8f8;
+}
+
+.status-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.status-label,
+.remaining-label,
+.field-label {
+  display: block;
+  color: #555555;
+  font-size: 0.9rem;
+}
+
+.status-value {
+  font-size: 1.1rem;
+}
+
+.field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.minutes-input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid #7a7a7a;
+  background: #ffffff;
+}
+
+.validation-message {
+  margin: -8px 0 16px;
+  color: #8a1f11;
+  font-size: 0.9rem;
+}
+
+.remaining-box {
+  margin-bottom: 16px;
+}
+
+.remaining-value {
+  display: block;
+  margin-top: 8px;
+  font-size: clamp(2.4rem, 8vw, 4rem);
+  letter-spacing: 0.08em;
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.primary-button,
+.secondary-button {
+  padding: 12px 10px;
+  border: 1px solid #3e3e3e;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.primary-button {
+  background: #1e1e1e;
+  color: #ffffff;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.message-box {
+  background: #fff9d7;
+  border-color: #d9c46c;
+}
+
+.message-title {
+  margin: 0 0 4px;
+  font-weight: 700;
+}
+
+.message-body {
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .timer-card {
+    padding: 16px;
+  }
+
+  .button-row {
+    grid-template-columns: 1fr;
+  }
+}
