@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: focus-time-timer
+  labels:
+    app: focus-time-timer
+spec:
+  selector:
+    app: focus-time-timer
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP

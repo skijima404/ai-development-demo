@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: focus-time-timer
+  labels:
+    app: focus-time-timer
+spec:
+  to:
+    kind: Service
+    name: focus-time-timer
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
