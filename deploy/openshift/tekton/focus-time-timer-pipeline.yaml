@@ -17,7 +17,7 @@ spec:
   params:
     - name: git-url
       type: string
-      default: https://github.com/example/ai-development-demo.git
+      default: https://github.com/skijima404/ai-development-demo.git
     - name: git-revision
       type: string
       default: main
@@ -211,6 +211,14 @@ spec:
   serviceAccountName: pipeline-bot
   triggers:
     - name: focus-time-timer-trigger
+      interceptors:
+        - ref:
+            name: cel
+          params:
+            - name: filter
+              value: >-
+                body.ref == 'refs/heads/main' &&
+                !body.head_commit.message.startsWith('chore(gitops):')
       bindings:
         - ref: focus-time-timer-push-binding
       template:

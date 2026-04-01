@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/example/ai-development-demo.git
+    repoURL: https://github.com/skijima404/ai-development-demo.git
     targetRevision: main
     path: deploy/gitops/focus-time-timer/overlays/demo
   destination:
