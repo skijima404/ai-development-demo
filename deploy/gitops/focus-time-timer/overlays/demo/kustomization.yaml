@@ -5,7 +5,7 @@ resources:
   - ../../base
 images:
   - name: image-registry.openshift-image-registry.svc:5000/demo-apps/focus-time-timer
-    newTag: demo-7b07a34
+    newTag: demo-703f306
 commonLabels:
   app.kubernetes.io/name: focus-time-timer
   app.kubernetes.io/part-of: ai-development-demo
