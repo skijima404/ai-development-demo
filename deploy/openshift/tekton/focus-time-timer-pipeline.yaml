@@ -108,6 +108,17 @@ spec:
         steps:
           - name: update
             image: registry.access.redhat.com/ubi9/python-311:latest
+            env:
+              - name: GIT_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: git-auth
+                    key: username
+              - name: GIT_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: git-auth
+                    key: password
             script: |
               #!/bin/sh
               set -eu
@@ -137,6 +148,7 @@ spec:
               cd "${REPO_DIR}"
               git config user.name "pipeline-bot"
               git config user.email "pipeline-bot@example.local"
+              git remote set-url origin "https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/skijima404/ai-development-demo.git"
               git add "$(params.gitops-overlay-path)"
               git commit -m "chore(gitops): promote focus-time-timer to $(params.image-tag)"
               TARGET_BRANCH="$(params.git-target-branch)"
