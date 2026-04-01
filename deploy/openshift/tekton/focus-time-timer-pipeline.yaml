@@ -202,7 +202,8 @@ spec:
       spec:
         pipelineRef:
           name: focus-time-timer-build-and-promote
-        serviceAccountName: pipeline-bot
+        taskRunTemplate:
+          serviceAccountName: pipeline-bot
         params:
           - name: git-url
             value: $(tt.params.git-url)
