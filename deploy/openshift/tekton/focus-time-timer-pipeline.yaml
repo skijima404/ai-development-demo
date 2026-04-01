@@ -1,0 +1,217 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pipeline-bot
+  namespace: demo-cicd
+secrets:
+  - name: git-auth
+  - name: image-registry-auth
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: focus-time-timer-build-and-promote
+  namespace: demo-cicd
+spec:
+  description: Build the focus-time-timer image, push it, and update the GitOps overlay tag for Argo CD.
+  params:
+    - name: git-url
+      type: string
+      default: https://github.com/example/ai-development-demo.git
+    - name: git-revision
+      type: string
+      default: main
+    - name: git-target-branch
+      type: string
+      default: main
+    - name: image-repository
+      type: string
+      default: image-registry.openshift-image-registry.svc:5000/demo-apps/focus-time-timer
+    - name: gitops-overlay-path
+      type: string
+      default: deploy/gitops/focus-time-timer/overlays/demo/kustomization.yaml
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: clone-repository
+      taskSpec:
+        params:
+          - name: git-url
+          - name: git-revision
+        workspaces:
+          - name: output
+        steps:
+          - name: clone
+            image: alpine/git:2.47.2
+            script: |
+              #!/bin/sh
+              set -eu
+              git clone "$(params.git-url)" "$(workspaces.output.path)/repo"
+              cd "$(workspaces.output.path)/repo"
+              git checkout "$(params.git-revision)"
+      params:
+        - name: git-url
+          value: $(params.git-url)
+        - name: git-revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+    - name: build-and-push-image
+      runAfter:
+        - clone-repository
+      taskSpec:
+        params:
+          - name: image-repository
+        results:
+          - name: image-tag
+          - name: image-reference
+        workspaces:
+          - name: source
+        steps:
+          - name: build
+            image: quay.io/buildah/stable:v1.37.5
+            securityContext:
+              privileged: true
+            script: |
+              #!/bin/sh
+              set -eu
+              cd "$(workspaces.source.path)/repo/src/focus-time-timer"
+              SHORT_SHA="$(git -C "$(workspaces.source.path)/repo" rev-parse --short HEAD)"
+              IMAGE_TAG="demo-${SHORT_SHA}"
+              buildah bud --format docker -t "$(params.image-repository):${IMAGE_TAG}" .
+              buildah push --tls-verify=false "$(params.image-repository):${IMAGE_TAG}"
+              printf "%s" "${IMAGE_TAG}" > "$(results.image-tag.path)"
+              printf "%s:%s" "$(params.image-repository)" "${IMAGE_TAG}" > "$(results.image-reference.path)"
+      params:
+        - name: image-repository
+          value: $(params.image-repository)
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: update-gitops-manifest
+      runAfter:
+        - build-and-push-image
+      taskSpec:
+        params:
+          - name: gitops-overlay-path
+          - name: image-tag
+          - name: git-target-branch
+        workspaces:
+          - name: source
+        steps:
+          - name: update
+            image: registry.access.redhat.com/ubi9/python-311:latest
+            script: |
+              #!/bin/sh
+              set -eu
+              REPO_DIR="$(workspaces.source.path)/repo"
+              FILE_PATH="${REPO_DIR}/$(params.gitops-overlay-path)"
+              export FILE_PATH
+              export IMAGE_TAG="$(params.image-tag)"
+              python - <<'PY'
+              import os
+              from pathlib import Path
+
+              path = Path(os.environ["FILE_PATH"])
+              image_tag = os.environ["IMAGE_TAG"]
+              lines = path.read_text().splitlines()
+              updated = []
+              replaced = False
+              for line in lines:
+                  if line.strip().startswith("newTag:"):
+                      updated.append("    newTag: " + image_tag)
+                      replaced = True
+                  else:
+                      updated.append(line)
+              if not replaced:
+                  raise SystemExit("newTag entry not found in overlay")
+              path.write_text("\n".join(updated) + "\n")
+              PY
+              cd "${REPO_DIR}"
+              git config user.name "pipeline-bot"
+              git config user.email "pipeline-bot@example.local"
+              git add "$(params.gitops-overlay-path)"
+              git commit -m "chore(gitops): promote focus-time-timer to $(params.image-tag)"
+              TARGET_BRANCH="$(params.git-target-branch)"
+              case "${TARGET_BRANCH}" in
+                refs/heads/*)
+                  TARGET_BRANCH="${TARGET_BRANCH#refs/heads/}"
+                  ;;
+              esac
+              git push origin "HEAD:${TARGET_BRANCH}"
+      params:
+        - name: gitops-overlay-path
+          value: $(params.gitops-overlay-path)
+        - name: image-tag
+          value: $(tasks.build-and-push-image.results.image-tag)
+        - name: git-target-branch
+          value: $(params.git-target-branch)
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: focus-time-timer-push-binding
+  namespace: demo-cicd
+spec:
+  params:
+    - name: git-url
+      value: $(body.repository.clone_url)
+    - name: git-revision
+      value: $(body.ref)
+    - name: git-target-branch
+      value: $(body.ref)
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: focus-time-timer-pipeline-template
+  namespace: demo-cicd
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+    - name: git-target-branch
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1
+      kind: PipelineRun
+      metadata:
+        generateName: focus-time-timer-run-
+        namespace: demo-cicd
+      spec:
+        pipelineRef:
+          name: focus-time-timer-build-and-promote
+        serviceAccountName: pipeline-bot
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+          - name: git-target-branch
+            value: $(tt.params.git-target-branch)
+        workspaces:
+          - name: shared-workspace
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: focus-time-timer-listener
+  namespace: demo-cicd
+spec:
+  serviceAccountName: pipeline-bot
+  triggers:
+    - name: focus-time-timer-trigger
+      bindings:
+        - ref: focus-time-timer-push-binding
+      template:
+        ref: focus-time-timer-pipeline-template

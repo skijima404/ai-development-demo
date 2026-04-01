@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: demo-apps
+resources:
+  - ../../base
+images:
+  - name: image-registry.openshift-image-registry.svc:5000/demo-apps/focus-time-timer
+    newTag: stable
+commonLabels:
+  app.kubernetes.io/name: focus-time-timer
+  app.kubernetes.io/part-of: ai-development-demo
+  app.kubernetes.io/managed-by: argocd
