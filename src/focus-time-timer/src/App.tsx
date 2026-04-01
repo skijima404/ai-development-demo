@@ -11,19 +11,6 @@ function formatRemaining(totalSeconds: number): string {
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
-function getAnalogHandAngles(totalSeconds: number) {
-  const clamped = Math.max(totalSeconds, 0);
-  const hours = Math.floor(clamped / 3600);
-  const minutes = Math.floor((clamped % 3600) / 60);
-  const seconds = clamped % 60;
-
-  return {
-    hour: ((hours % 12) + minutes / 60 + seconds / 3600) * 30,
-    minute: (minutes + seconds / 60) * 6,
-    second: seconds * 6,
-  };
-}
-
 export default function App() {
   const [minutesInput, setMinutesInput] = useState(String(DEFAULT_MINUTES));
   const [phase, setPhase] = useState<TimerPhase>("beforeStart");
@@ -114,7 +101,6 @@ export default function App() {
         : phase === "paused"
           ? "停止中"
           : "終了後";
-  const analogAngles = getAnalogHandAngles(remainingSeconds);
   const remainingText = formatRemaining(remainingSeconds);
 
   return (
@@ -146,23 +132,7 @@ export default function App() {
 
         <div className="remaining-box" aria-live="polite">
           <span className="remaining-label">残り時間</span>
-          <div className="analog-clock" role="img" aria-label={`残り時間 ${remainingText}`}>
-            <div className="analog-clock-face">
-              <span className="analog-clock-center" aria-hidden="true" />
-              <span className="analog-clock-hand analog-clock-hand-hour" style={{ transform: `translateX(-50%) rotate(${analogAngles.hour}deg)` }} aria-hidden="true" />
-              <span className="analog-clock-hand analog-clock-hand-minute" style={{ transform: `translateX(-50%) rotate(${analogAngles.minute}deg)` }} aria-hidden="true" />
-              <span className="analog-clock-hand analog-clock-hand-second" style={{ transform: `translateX(-50%) rotate(${analogAngles.second}deg)` }} aria-hidden="true" />
-              {Array.from({ length: 12 }, (_, index) => (
-                <span
-                  key={index}
-                  className="analog-clock-tick"
-                  style={{ transform: `translate(-50%, -510%) rotate(${index * 30}deg)` }}
-                  aria-hidden="true"
-                />
-              ))}
-            </div>
-          </div>
-          <strong className="remaining-caption">{remainingText}</strong>
+          <strong className="remaining-value">{remainingText}</strong>
         </div>
 
         <div className="button-row">

@@ -94,78 +94,11 @@ input {
   margin-bottom: 16px;
 }
 
-.analog-clock {
-  display: grid;
-  place-items: center;
-  margin-top: 12px;
-}
-
-.analog-clock-face {
-  position: relative;
-  width: min(100%, 240px);
-  aspect-ratio: 1;
-  border: 6px solid #1e1e1e;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at center, #ffffff 0 58%, #f0f0f0 58% 100%);
-}
-
-.analog-clock-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background: #1e1e1e;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-}
-
-.analog-clock-hand {
-  position: absolute;
-  left: 50%;
-  bottom: 50%;
-  transform-origin: center bottom;
-  border-radius: 999px;
-}
-
-.analog-clock-hand-hour {
-  width: 8px;
-  height: 28%;
-  background: #1e1e1e;
-  z-index: 1;
-}
-
-.analog-clock-hand-minute {
-  width: 6px;
-  height: 38%;
-  background: #4b4b4b;
-  z-index: 2;
-}
-
-.analog-clock-hand-second {
-  width: 2px;
-  height: 42%;
-  background: #b42318;
-  z-index: 2;
-}
-
-.analog-clock-tick {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 3px;
-  height: 7%;
-  background: #1e1e1e;
-}
-
-.remaining-caption {
+.remaining-value {
   display: block;
-  margin-top: 12px;
-  text-align: center;
-  font-size: 1rem;
-  letter-spacing: 0.12em;
+  margin-top: 8px;
+  font-size: clamp(2.4rem, 8vw, 4rem);
+  letter-spacing: 0.08em;
 }
 
 .button-row {
