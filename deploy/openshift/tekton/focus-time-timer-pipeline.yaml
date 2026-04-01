@@ -235,8 +235,7 @@ spec:
           params:
             - name: filter
               value: >-
-                body.ref == 'refs/heads/main' &&
-                !body.head_commit.message.startsWith('chore(gitops):')
+                body.ref == 'refs/heads/main'
       bindings:
         - ref: focus-time-timer-push-binding
       template:
