@@ -15,11 +15,14 @@
 - `demo-cicd` namespace に Tekton 関連資産を適用できる
 - `demo-apps` namespace にアプリを配備できる
 - コンテナレジストリと Git push 用の認証情報が作成済み
+- GitHub リポジトリの既定ブランチは `main`
+- 初期安定版イメージタグは `stable`
 
 ## 初回セットアップ
-1. `deploy/openshift/tekton/focus-time-timer-pipeline.yaml` を適用する。
-2. `deploy/openshift/argocd/focus-time-timer-application.yaml` を適用する。
-3. Argo CD が `deploy/gitops/focus-time-timer/overlays/demo` を同期し、初期版を配備する。
+1. `demo-apps/focus-time-timer:stable` の初期安定版イメージをあらかじめ作成しておく。
+2. `deploy/openshift/tekton/focus-time-timer-pipeline.yaml` を適用する。
+3. `deploy/openshift/argocd/focus-time-timer-application.yaml` を適用する。
+4. Argo CD が `deploy/gitops/focus-time-timer/overlays/demo` を同期し、初期版を配備する。
 
 ## 通常のデプロイデモ
 1. アプリ変更を Git に反映する。
@@ -27,6 +30,11 @@
 3. Tekton が image tag を生成し、GitOps オーバーレイの `newTag` を更新して push する。
 4. Argo CD が同期し、OpenShift 上の `focus-time-timer` を更新する。
 5. Route へアクセスして新版を確認する。
+
+## Trigger の前提
+- EventListener は `refs/heads/main` の push のみ受け付ける
+- `chore(gitops):` で始まる GitOps 更新コミットは再起動対象から除外する
+- 初回確認は webhook ではなく手動 `PipelineRun` から始めてもよい
 
 ## ロールバックデモ
 1. 新版に不具合があることを確認する。
