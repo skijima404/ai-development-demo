@@ -38,6 +38,8 @@ spec:
         params:
           - name: git-url
           - name: git-revision
+        results:
+          - name: commit-sha
         workspaces:
           - name: output
         steps:
@@ -49,6 +51,7 @@ spec:
               git clone "$(params.git-url)" "$(workspaces.output.path)/repo"
               cd "$(workspaces.output.path)/repo"
               git checkout "$(params.git-revision)"
+              git rev-parse --short HEAD | tr -d '\n' > "$(results.commit-sha.path)"
       params:
         - name: git-url
           value: $(params.git-url)
@@ -63,6 +66,7 @@ spec:
       taskSpec:
         params:
           - name: image-repository
+          - name: commit-sha
         results:
           - name: image-tag
           - name: image-reference
@@ -77,7 +81,7 @@ spec:
               #!/bin/sh
               set -eu
               cd "$(workspaces.source.path)/repo/src/focus-time-timer"
-              SHORT_SHA="$(git -C "$(workspaces.source.path)/repo" rev-parse --short HEAD)"
+              SHORT_SHA="$(params.commit-sha)"
               IMAGE_TAG="demo-${SHORT_SHA}"
               buildah bud --format docker -t "$(params.image-repository):${IMAGE_TAG}" .
               buildah push --tls-verify=false "$(params.image-repository):${IMAGE_TAG}"
@@ -86,6 +90,8 @@ spec:
       params:
         - name: image-repository
           value: $(params.image-repository)
+        - name: commit-sha
+          value: $(tasks.clone-repository.results.commit-sha)
       workspaces:
         - name: source
           workspace: shared-workspace
