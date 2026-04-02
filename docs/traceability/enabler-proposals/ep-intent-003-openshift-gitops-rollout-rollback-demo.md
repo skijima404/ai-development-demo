@@ -57,6 +57,7 @@
 - Argo CD は `deploy/gitops/focus-time-timer/overlays/demo` の宣言状態だけを見て同期する。
 - `deploy/gitops/**` のみの変更はロールバックや版固定のための GitOps 操作として扱い、Tekton の再起動条件に含めない。
 - GitHub 上で GitOps の `newTag` を前の版へ戻せば、Argo CD によるロールバックが成立する構成を目指す。
+- GitOps の tag 切り替えやロールバックは、AI コーディング支援エージェントが補助スクリプトをキックして進められるようにする。
 
 ## 変更契約
 - 許可される変更:

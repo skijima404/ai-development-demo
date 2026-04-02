@@ -31,6 +31,15 @@
 4. Argo CD が同期し、OpenShift 上の `focus-time-timer` を更新する。
 5. Route へアクセスして新版を確認する。
 
+## 補助スクリプト
+- GitOps の image tag を任意のタグへ切り替える:
+  - `scripts/openshift/set-focus-time-timer-tag.sh <tag>`
+- GitOps の image tag を任意のタグへロールバックする:
+  - `scripts/openshift/rollback-focus-time-timer.sh <tag>`
+- どちらのスクリプトも、clean worktree 上の `main` を前提に、`origin/main` へ追従してから `deploy/gitops/focus-time-timer/overlays/demo/kustomization.yaml` を更新し、commit、push、Argo CD refresh まで行う。
+- 詳細な使い方:
+  - `docs/operations/focus-time-timer-gitops-helper-scripts.md`
+
 ## Trigger の前提
 - EventListener は `refs/heads/main` の push のみ受け付ける
 - `src/focus-time-timer/` 配下に変更がある push のみを再起動対象とする
