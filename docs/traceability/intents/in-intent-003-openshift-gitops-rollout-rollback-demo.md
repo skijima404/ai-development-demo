@@ -34,18 +34,20 @@ AI 支援で開発したアプリを OpenShift にデプロイし、不具合時
 1. 開発変更から OpenShift 反映までの責務分離を説明できる。
 2. 不具合時に GitOps の変更を戻せば安定版へ復旧できることを示せる。
 3. デモ参加者が Tekton と Argo CD の役割差を理解できる。
+4. 初回セットアップに必要な OpenShift 固有設定が repo 資産と runbook に残っている。
 
 ## 現在の目標運用
 - アプリ実装変更は Tekton の起動対象とする。
 - GitOps オーバーレイ変更は Argo CD の同期対象とし、Tekton の再起動対象にしない。
-- ロールバックは `deploy/gitops/focus-time-timer/overlays/demo/kustomization.yaml` の `newTag` を前の版へ戻す操作で説明できるようにする。
+- ロールバックは `deploy/gitops/focus-time-timer/overlays/demo/kustomization.yaml` の `newTag` をデモ基準版 `v2` へ戻す操作で説明できるようにする。
 - `chore(gitops):` で始まる Tekton 自動更新コミットは、再度 Tekton を起動しないようにする。
+- 初回セットアップに必要な namespace, RBAC, Route, webhook secret, `v2` / `stable` tag 作成方法を repo 資産から追えるようにする。
 
 ## 下流成果物
 - 想定する実装仕様:
   - Tekton + Argo CD による OpenShift デプロイデモ
 - 想定する運用資産:
-  - デプロイとロールバックの実演手順
+  - 初回セットアップ、デプロイ確認、ロールバックの実演手順
 
 ## 参考
 - `docs/product/concepts/business-demo-development-loop.md`

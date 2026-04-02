@@ -1,0 +1,30 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: focus-time-timer-manual-
+  namespace: demo-cicd
+  labels:
+    app.kubernetes.io/name: focus-time-timer
+    app.kubernetes.io/part-of: ai-development-demo
+    ai-development-demo/run-mode: manual-verification
+spec:
+  pipelineRef:
+    name: focus-time-timer-build-and-promote
+  taskRunTemplate:
+    serviceAccountName: pipeline-bot
+  params:
+    - name: git-url
+      value: https://github.com/skijima404/ai-development-demo.git
+    - name: git-revision
+      value: main
+    - name: git-target-branch
+      value: main
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi

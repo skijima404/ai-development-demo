@@ -1,0 +1,17 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: focus-time-timer-listener
+  namespace: demo-cicd
+  labels:
+    app.kubernetes.io/name: focus-time-timer-listener
+    app.kubernetes.io/part-of: ai-development-demo
+spec:
+  to:
+    kind: Service
+    name: el-focus-time-timer-listener
+  port:
+    targetPort: http-listener
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
