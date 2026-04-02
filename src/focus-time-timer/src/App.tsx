@@ -107,7 +107,6 @@ export default function App() {
     <main className="app-shell">
       <section className="timer-card">
         <h1 className="title">Focus Time Timer</h1>
-        <p className="subtitle">味気ないスケルトン MVP</p>
 
         <div className="status-box">
           <span className="status-label">現在状態</span>
