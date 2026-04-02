@@ -5,7 +5,7 @@
 - owner: shared
 - status: draft
 - created_at: 2026-03-31
-- updated_at: 2026-03-31
+- updated_at: 2026-04-02
 - related_enabler_proposal: docs/traceability/enabler-proposals/ep-intent-003-openshift-gitops-rollout-rollback-demo.md
 - depends_on_enablers:
   - intent-000
@@ -52,6 +52,8 @@
 2. Tekton は `src/focus-time-timer/` をビルドし、生成したイメージ参照を GitOps オーバーレイへ反映する。
 3. Argo CD は `deploy/gitops/focus-time-timer/overlays/demo` を監視する。
 4. ロールバックは Argo CD の UI 操作ではなく、まず Git の状態を戻す説明を主にする。
+5. Tekton Trigger は `main` への push のうち、`src/focus-time-timer/` 配下に変更を含むものだけを受け付ける。
+6. GitOps オーバーレイのみの変更は Argo CD の同期対象であり、Tekton の再起動対象にしない。
 
 ## 実行メモ
 - 変更してよいファイル:
@@ -78,7 +80,8 @@
 1. `kustomization.yaml` からデモ環境のイメージ参照が確認できること。
 2. Tekton マニフェスト上で build と GitOps 更新の順序が読み取れること。
 3. Argo CD Application が GitOps オーバーレイを参照していること。
-4. runbook だけでロールバック経路を説明できること。
+4. `deploy/gitops/**` のみを変更した push では EventListener 条件を満たさないことがマニフェストから読み取れること。
+5. runbook だけでロールバック経路を説明できること。
 
 ## デモ説明用の要点
 - Tekton は「作る側」

@@ -5,7 +5,7 @@
 - owner: shared
 - status: draft
 - created_at: 2026-03-31
-- updated_at: 2026-03-31
+- updated_at: 2026-04-02
 
 ## 目的
 `focus-time-timer` の新版デプロイと、前の安定版への巻き戻しを、同じ説明線上で実演できるようにする。
@@ -33,6 +33,8 @@
 
 ## Trigger の前提
 - EventListener は `refs/heads/main` の push のみ受け付ける
+- `src/focus-time-timer/` 配下に変更がある push のみを再起動対象とする
+- `deploy/gitops/` のみの変更では Tekton を再起動しない
 - `chore(gitops):` で始まる GitOps 更新コミットは再起動対象から除外する
 - 初回確認は webhook ではなく手動 `PipelineRun` から始めてもよい
 
@@ -40,8 +42,9 @@
 1. 新版に不具合があることを確認する。
 2. `deploy/gitops/focus-time-timer/overlays/demo/kustomization.yaml` の `images[].newTag` を、直前の安定版タグへ戻す。
 3. 変更を Git に push する。
-4. Argo CD が再同期し、Deployment の image が安定版へ戻ることを確認する。
-5. Route で復旧を確認する。
+4. Tekton が再起動しないことを確認する。
+5. Argo CD が再同期し、Deployment の image が安定版へ戻ることを確認する。
+6. Route で復旧を確認する。
 
 ## デモ中に強調する説明
 - Tekton はビルド担当であり、直接クラスタ状態を正本化しない

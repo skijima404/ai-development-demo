@@ -5,7 +5,7 @@
 - owner: shared
 - status: draft
 - created_at: 2026-03-31
-- updated_at: 2026-03-31
+- updated_at: 2026-04-02
 - enables:
   - intent-001
   - intent-002
@@ -31,6 +31,7 @@
 1. Tekton と Argo CD の責務が分離された構成になっている。
 2. デプロイ状態の正本が GitOps マニフェストとして Git に残る。
 3. 前の安定イメージタグへ戻す手順が 1 つの runbook で示されている。
+4. GitOps オーバーレイのみの変更で Tekton が再起動しない。
 
 ## スコープ
 - 対象範囲:
@@ -50,6 +51,12 @@
   - `focus-time-timer` のような下流機能が、どう配備されるかの土台として参照する
 - 実装仕様がこの資産をどう参照すべきか:
   - GitOps の正本位置、Tekton/Argo CD の責務分離、runbook の存在を前提として詳細化する
+
+## 現在の設計意図
+- Tekton は `src/focus-time-timer/` の変更を起点にビルドと GitOps 更新を行う。
+- Argo CD は `deploy/gitops/focus-time-timer/overlays/demo` の宣言状態だけを見て同期する。
+- `deploy/gitops/**` のみの変更はロールバックや版固定のための GitOps 操作として扱い、Tekton の再起動条件に含めない。
+- GitHub 上で GitOps の `newTag` を前の版へ戻せば、Argo CD によるロールバックが成立する構成を目指す。
 
 ## 変更契約
 - 許可される変更:

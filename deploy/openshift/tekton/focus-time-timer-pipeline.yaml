@@ -236,7 +236,13 @@ spec:
           params:
             - name: filter
               value: >-
-                body.ref == 'refs/heads/main'
+                body.ref == 'refs/heads/main' &&
+                !(has(body.head_commit) && body.head_commit != null && body.head_commit.message.startsWith('chore(gitops):')) &&
+                body.commits.exists(c,
+                  c.added.exists(f, f.startsWith('src/focus-time-timer/')) ||
+                  c.modified.exists(f, f.startsWith('src/focus-time-timer/')) ||
+                  c.removed.exists(f, f.startsWith('src/focus-time-timer/'))
+                )
       bindings:
         - ref: focus-time-timer-push-binding
       template:
