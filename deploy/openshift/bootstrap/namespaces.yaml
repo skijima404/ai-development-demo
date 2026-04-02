@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo-cicd
+  labels:
+    app.kubernetes.io/part-of: ai-development-demo
+    app.kubernetes.io/component: cicd
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo-apps
+  labels:
+    app.kubernetes.io/part-of: ai-development-demo
+    app.kubernetes.io/component: applications

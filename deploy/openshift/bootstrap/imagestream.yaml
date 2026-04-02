@@ -1,0 +1,8 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: focus-time-timer
+  namespace: demo-apps
+  labels:
+    app.kubernetes.io/name: focus-time-timer
+    app.kubernetes.io/part-of: ai-development-demo

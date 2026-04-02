@@ -3,6 +3,9 @@ kind: ServiceAccount
 metadata:
   name: pipeline-bot
   namespace: demo-cicd
+  labels:
+    app.kubernetes.io/part-of: ai-development-demo
+    app.kubernetes.io/component: tekton
 secrets:
   - name: git-auth
   - name: image-registry-auth
@@ -226,11 +229,24 @@ kind: EventListener
 metadata:
   name: focus-time-timer-listener
   namespace: demo-cicd
+  labels:
+    app.kubernetes.io/name: focus-time-timer-listener
+    app.kubernetes.io/part-of: ai-development-demo
 spec:
   serviceAccountName: pipeline-bot
   triggers:
     - name: focus-time-timer-trigger
       interceptors:
+        - ref:
+            name: github
+          params:
+            - name: secretRef
+              value:
+                secretName: github-webhook-secret
+                secretKey: secretToken
+            - name: eventTypes
+              value:
+                - push
         - ref:
             name: cel
           params:
