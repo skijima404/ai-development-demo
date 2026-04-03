@@ -42,7 +42,17 @@ focus_time_timer_sync_branch() {
 
 focus_time_timer_update_tag() {
   local tag="$1"
-  python - "${FOCUS_TIME_TIMER_KUSTOMIZATION_PATH}" "${tag}" <<'PY'
+  local python_cmd
+  if command -v python3 >/dev/null 2>&1; then
+    python_cmd="python3"
+  elif command -v python >/dev/null 2>&1; then
+    python_cmd="python"
+  else
+    echo "python3 or python is required" >&2
+    exit 1
+  fi
+
+  "${python_cmd}" - "${FOCUS_TIME_TIMER_KUSTOMIZATION_PATH}" "${tag}" <<'PY'
 from pathlib import Path
 import sys
 
