@@ -38,6 +38,12 @@ input {
   font-size: 1.75rem;
 }
 
+.subtitle {
+  margin: 8px 0 16px;
+  color: #4a4a4a;
+  font-size: 0.95rem;
+}
+
 .status-box,
 .remaining-box,
 .message-box {
