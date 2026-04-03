@@ -5,7 +5,7 @@
 - owner: shared
 - status: draft
 - created_at: 2026-04-02
-- updated_at: 2026-04-02
+- updated_at: 2026-04-03
 
 ## 目的
 新しい OpenShift 環境でデモ準備を行う際に、発生しやすい失敗を Codex または人が短く切り分けられるようにする。
@@ -49,9 +49,11 @@ oc apply -k deploy/openshift
 ## ケース 4: `v2` に戻したいが tag が存在しない
 - 症状:
   - rollback シナリオに入れない
+  - `focus-time-timer:v2` を pull しようとして `ImagePullBackOff` になる
 - 主な確認:
   - `oc -n demo-apps get istag focus-time-timer:v2`
   - `oc -n demo-apps get istag`
+  - `oc -n demo-apps describe pod <pod-name>`
 - 主な対処:
   - 既存の `demo-<short-sha>` を確認し、次を実行する
 
@@ -88,9 +90,40 @@ oc -n demo-apps get route focus-time-timer
 scripts/openshift/check-demo-env.sh
 ```
 
+## ケース 8: `openshift-gitops` や `openshift-pipelines` が存在しない
+- 症状:
+  - まっさらな OCP に対して bootstrap が進まない
+- 主な確認:
+  - `oc get ns openshift-gitops openshift-pipelines`
+  - `oc get subscription -n openshift-operators`
+- 主な対処:
+
+```bash
+scripts/openshift/install-demo-operators.sh
+```
+
+## ケース 9: webhook 疎通確認は成功したが PipelineRun が作られない
+- 症状:
+  - GitHub webhook delivery は `202`
+  - `demo-cicd` に `PipelineRun` が作られない
+- 主な確認:
+  - delivery が `ping` ではなく `push` か
+  - push 先が `main` か
+  - 変更に `src/focus-time-timer/` が含まれているか
+  - commit message が `chore(gitops):` で始まっていないか
+- 主な対処:
+  - 初回は手動 `PipelineRun` で `demo-<short-sha>` を作る
+  - その後 webhook の自動起動確認へ進む
+
+```bash
+oc create -f deploy/openshift/tekton/focus-time-timer-manual-run.yaml
+```
+
 ## 関連資産
+- `scripts/openshift/install-demo-operators.sh`
 - `scripts/openshift/bootstrap-demo-env.sh`
 - `scripts/openshift/check-demo-env.sh`
 - `scripts/openshift/tag-focus-time-timer-image.sh`
 - `deploy/openshift/kustomization.yaml`
+- `docs/operations/openshift-platform-prerequisites.md`
 - `docs/operations/openshift-demo-bootstrap-checklist.md`

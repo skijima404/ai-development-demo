@@ -5,7 +5,7 @@
 - owner: shared
 - status: draft
 - created_at: 2026-03-31
-- updated_at: 2026-04-02
+- updated_at: 2026-04-03
 
 ## 目的
 `focus-time-timer` の新版デプロイと、前の安定版への巻き戻しを、同じ説明線上で実演できるようにする。
@@ -66,10 +66,11 @@
    - Secret: `github-webhook-secret.secretToken` と同じ値
    - Event: `Just the push event`
    - Active: `true`
+4. 疎通確認で `202` が返る場合は EventListener 到達として正常とみなす。
 
 ### 5. デモ基準版 `v2` を作る
 1. まず手動 `PipelineRun` で 1 回ビルドする。
-   - `oc apply -f deploy/openshift/tekton/focus-time-timer-manual-run.yaml`
+   - `oc create -f deploy/openshift/tekton/focus-time-timer-manual-run.yaml`
 2. 成功したタグを確認する。
    - `oc -n demo-apps get istag`
 3. 初回成功タグを `v2` へ付け替える。
@@ -81,7 +82,7 @@
 6. Argo CD が `deploy/gitops/focus-time-timer/overlays/demo` を同期し、初期版を配備する。
 
 ## 手動確認フロー
-1. `oc apply -f deploy/openshift/tekton/focus-time-timer-manual-run.yaml`
+1. `oc create -f deploy/openshift/tekton/focus-time-timer-manual-run.yaml`
 2. `oc -n demo-cicd get pipelinerun`
 3. `oc -n demo-cicd logs -f pipelinerun/<generated-name>`
 4. GitOps 更新確認:
@@ -160,6 +161,7 @@
 ## rollback 時の運用注意
 - `v2` をデモ基準版として扱い、通常の rollback 説明は `v2` へ戻す流れで固定する
 - `stable` は補助的な控えとして扱い、毎回自動更新しない
+- `v2` が未作成のまま GitOps が `v2` を参照すると、`manifest unknown` により `ImagePullBackOff` になる
 - rollback 前に、戻すタグが `demo-apps` ImageStream に存在することを確認する
 - 手動 rollback で `deploy/gitops/**` だけを変更した場合、Tekton は起動しない前提で確認する
 - Route や RoleBinding などの基盤資産に問題がある場合は、先に `oc apply -k deploy/openshift` で基盤差分を復旧する

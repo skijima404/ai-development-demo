@@ -14,6 +14,7 @@ IMAGE_REGISTRY_SECRET_NAME="${IMAGE_REGISTRY_SECRET_NAME:-image-registry-auth}"
 REGISTRY_SERVER="${REGISTRY_SERVER:-image-registry.openshift-image-registry.svc:5000}"
 DOCKERHUB_EMAIL="${DOCKERHUB_EMAIL:-unused@example.local}"
 SKIP_APPLY="${SKIP_APPLY:-false}"
+AUTO_INSTALL_PREREQUISITES="${AUTO_INSTALL_PREREQUISITES:-false}"
 
 require_command() {
   local command_name="$1"
@@ -28,6 +29,24 @@ require_oc_login() {
     echo "oc login is required before running this script" >&2
     exit 1
   fi
+}
+
+ensure_platform_prerequisites() {
+  if oc get ns openshift-gitops >/dev/null 2>&1 && oc get crd tektonconfigs.operator.tekton.dev >/dev/null 2>&1; then
+    return
+  fi
+
+  if [[ "${AUTO_INSTALL_PREREQUISITES}" == "true" ]]; then
+    "${SCRIPT_DIR}/install-demo-operators.sh"
+    return
+  fi
+
+  cat >&2 <<EOF
+OpenShift GitOps or OpenShift Pipelines prerequisites are missing.
+Run scripts/openshift/install-demo-operators.sh first,
+or rerun this script with AUTO_INSTALL_PREREQUISITES=true.
+EOF
+  exit 1
 }
 
 apply_manifests() {
@@ -132,6 +151,7 @@ EOF
 main() {
   require_command oc
   require_oc_login
+  ensure_platform_prerequisites
 
   apply_manifests
   create_git_auth_secret

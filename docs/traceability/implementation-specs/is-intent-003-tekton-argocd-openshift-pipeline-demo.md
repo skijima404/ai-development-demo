@@ -46,6 +46,7 @@
     - EventListener 実行用 RoleBinding / ClusterRoleBinding
     - Buildah 実行用 SCC binding
   - 初回セットアップ:
+    - operator 導入
     - namespace
     - ImageStream
     - secret template
@@ -56,6 +57,7 @@
     - 手動確認 / 自動確認
     - ロールバック runbook
   - 補助スクリプト:
+    - operator 導入
     - secret 作成と ServiceAccount link
     - 環境検査
     - ImageStream tag 作成
@@ -68,7 +70,7 @@
 1. デプロイ対象の正本は `deploy/gitops/focus-time-timer/` 配下に置く。
 2. Tekton は `src/focus-time-timer/` をビルドし、生成したイメージ参照を GitOps オーバーレイへ反映する。
 3. Argo CD は `deploy/gitops/focus-time-timer/overlays/demo` を監視する。
-4. 初回ブートストラップは `deploy/openshift/kustomization.yaml` を入口に、namespace, RBAC, secret template, Route, Application を一括適用できるようにする。
+4. 素の OCP では operator 導入を先行し、その後 `deploy/openshift/kustomization.yaml` を入口に namespace, RBAC, Route, Application を一括適用できるようにする。
 5. EventListener は GitHub webhook secret を前提に `push` event のみを受け付ける。
 6. ロールバックは Argo CD の UI 操作ではなく、まず Git の状態を戻す説明を主にする。
 7. Tekton Trigger は `main` への push のうち、`src/focus-time-timer/` 配下に変更を含むものだけを受け付ける。

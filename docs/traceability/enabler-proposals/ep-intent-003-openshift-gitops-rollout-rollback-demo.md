@@ -23,6 +23,7 @@
   - `deploy/gitops/focus-time-timer/overlays/demo/`
 - OpenShift 連携資産:
   - `deploy/openshift/kustomization.yaml`
+  - `deploy/openshift/operators/`
   - `deploy/openshift/bootstrap/`
   - `deploy/openshift/tekton/focus-time-timer-pipeline.yaml`
   - `deploy/openshift/tekton/focus-time-timer-listener-route.yaml`
@@ -32,7 +33,9 @@
   - `docs/operations/openshift-demo-rollout-rollback-runbook.md`
   - `docs/operations/openshift-demo-bootstrap-checklist.md`
   - `docs/operations/openshift-demo-troubleshooting.md`
+  - `docs/operations/openshift-platform-prerequisites.md`
 - 補助スクリプト:
+  - `scripts/openshift/install-demo-operators.sh`
   - `scripts/openshift/bootstrap-demo-env.sh`
   - `scripts/openshift/check-demo-env.sh`
   - `scripts/openshift/tag-focus-time-timer-image.sh`
@@ -48,7 +51,8 @@
 - 対象範囲:
   - `focus-time-timer` の GitOps ベース/オーバーレイ定義
   - Argo CD Application
-  - OpenShift 初回セットアップ用 namespace, RBAC, secret template, ImageStream
+- OpenShift 初回セットアップ用 namespace, RBAC, secret template, ImageStream
+  - GitOps / Pipelines operator 導入
   - Tekton Pipeline, TriggerTemplate, EventListener
   - EventListener 用 Route
   - 手動検証用 PipelineRun
