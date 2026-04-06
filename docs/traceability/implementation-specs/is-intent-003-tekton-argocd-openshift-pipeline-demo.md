@@ -5,7 +5,7 @@
 - owner: shared
 - status: draft
 - created_at: 2026-03-31
-- updated_at: 2026-04-02
+- updated_at: 2026-04-04
 - related_enabler_proposal: docs/traceability/enabler-proposals/ep-intent-003-openshift-gitops-rollout-rollback-demo.md
 - depends_on_enablers:
   - intent-000
@@ -76,6 +76,22 @@
 7. Tekton Trigger は `main` への push のうち、`src/focus-time-timer/` 配下に変更を含むものだけを受け付ける。
 8. GitOps オーバーレイのみの変更は Argo CD の同期対象であり、Tekton の再起動対象にしない。
 9. 新しい OpenShift 環境では `v2` をデモ基準版 tag として持ち、rollback の説明先を固定する。
+
+## 変更契約
+- 許可される変更:
+  - GitOps, Tekton, Argo CD, runbook の責務分離を明確にする改善
+  - 初回セットアップとロールバックの再現性を上げる文書・スクリプト追加
+- 禁止される変更:
+  - GitOps と Tekton の責務を再び曖昧にすること
+  - デモの主眼を越えて本番運用の正解であるかのように見せる過剰実装
+- 承認が必要:
+  - 複数環境 promotion や本番前提の secrets 運用を導入する変更
+  - `focus-time-timer` を超えてデモ対象の構成を大きく広げる変更
+- 検証:
+  - Tekton -> GitOps 更新 -> Argo CD 同期 -> rollback の責務境界が資産から読めること
+  - 初回セットアップと復旧手順が repo 資産だけで再説明できること
+- 巻き戻し:
+  - GitOps オーバーレイと runbook を、直前の安定説明ができる状態へ戻す
 
 ## 実行メモ
 - 変更してよいファイル:

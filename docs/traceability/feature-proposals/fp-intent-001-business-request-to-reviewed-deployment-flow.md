@@ -5,9 +5,10 @@
 - owner: shared
 - status: draft
 - created_at: 2026-03-30
-- updated_at: 2026-04-02
+- updated_at: 2026-04-04
 - related_enablers:
   - intent-000
+  - intent-004
 - related_ui_spec: docs/traceability/ui-specs/ui-intent-001-request-review-deploy-surface.md
 
 ## 意図
@@ -21,11 +22,13 @@
 2. 人間レビューが、名目上ではなく構造上の段階として残る。
 3. コミットとデプロイ準備がデリバリーフローの一部として見える。
 4. AI コーディング支援エージェントが、コミット後の GitOps 操作を補助できる。
+5. 業務ユーザーの「これを作って」という要求から、工程ごとの変更整合性ゲートを通して次工程へ進める。
 
 ## スコープ
 - 対象範囲:
   - 作業フローの骨格定義
   - 要求 / 仕様 / 実装 / レビュー の関係づけ
+  - 工程ごとの変更整合性ゲート定義
   - コミット / デプロイ引き継ぎの見せ方
   - AI による GitOps tag 切り替え / ロールバック補助の見せ方
 - 対象外:
@@ -38,6 +41,7 @@
   - 要件・設計資産と本番コードは分離する
 - 運用面:
   - 業務ユーザーに理解できる流れを保つ
+  - product vision と traceability 正本に基づく通過条件を持つ
 - デモ設計:
   - 全自動の魔法のようには見せない
   - AI が GitOps 操作を行う場合も、何を変えたかを Git 履歴と運用資産で説明できること
@@ -45,6 +49,7 @@
 ## 変更契約
 - 許可される変更:
   - 作業フロー各段階の具体化
+  - 工程ごとのチェック観点と通過条件の具体化
   - レビュー / デプロイ引き継ぎの詳細化
 - 禁止される変更:
   - 人間レビューの除去
@@ -53,6 +58,7 @@
   - 人間の確認点なしの完全自律デプロイを前提にする変更
 - 検証:
   - 価値の流れ、UI 仕様、将来の実装資産と整合していること
+  - `docs/product/vision.md` と `intent-004` の変更整合性ゲートに照らして説明できること
 - 巻き戻し:
   - 骨格定義に誤解がある場合は、修正版提案に差し替える
 
@@ -64,3 +70,4 @@
 - `docs/product/vision.md`
 - `docs/product/concepts/business-demo-development-loop.md`
 - `docs/product/expected-outputs/review-package.md`
+- `docs/traceability/enabler-proposals/ep-intent-004-traceability-check-gate.md`

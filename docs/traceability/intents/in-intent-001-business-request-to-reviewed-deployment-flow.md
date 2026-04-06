@@ -5,11 +5,12 @@
 - owner: shared
 - status: draft
 - created_at: 2026-03-30
-- updated_at: 2026-03-30
+- updated_at: 2026-04-04
 - related_value_streams:
   - docs/traceability/value-streams/vs-intent-001-business-request-to-reviewed-deployment.md
 - related_enablers:
   - intent-000
+  - intent-004
 
 ## 望む変化
 業務ユーザー向けの AI 開発の流れを、要求受付からコミット・デプロイ準備まで、理解しやすくレビュー可能な形で見せられるようにする。
