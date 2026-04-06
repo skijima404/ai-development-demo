@@ -5,7 +5,7 @@
 - owner: shared
 - status: draft
 - created_at: 2026-03-30
-- updated_at: 2026-03-30
+- updated_at: 2026-04-04
 - related_enablers:
   - intent-000
 - related_ui_spec: docs/traceability/ui-specs/ui-intent-002-focus-time-timer-screen.md
@@ -67,6 +67,10 @@
   - 状態表示と時間変更が実際に分かりやすいこと
 - 巻き戻し:
   - スコープが膨らんだ場合は、MVP に戻す方向で提案を修正する
+
+## 未解決事項
+- [ ] 終了通知音をどの形式でリポジトリに保持するかを確定する
+- [ ] デモ時に停止ボタンを見せるか、開始とリセット中心に見せるかを確定する
 
 ## 参考
 - `docs/product/vision.md`

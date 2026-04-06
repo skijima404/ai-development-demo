@@ -57,8 +57,19 @@
 - `docs/traceability/feature-proposals/fp-intent-001-business-request-to-reviewed-deployment-flow.md`
 - `docs/traceability/implementation-specs/is-intent-000-repository-bootstrap.md`
 - `docs/traceability/implementation-specs/is-intent-003-tekton-argocd-openshift-pipeline-demo.md`
+- `docs/traceability/implementation-specs/is-intent-004-traceability-check-gate.md`
+- `docs/operations/traceability-checker.md`
 - `deploy/openshift/tekton/focus-time-timer-pipeline.yaml`
 - `deploy/openshift/argocd/focus-time-timer-application.yaml`
+
+## Traceability Check
+最小構成の文書レビュー用 checker は次で実行できます。
+
+- `node scripts/traceability/check-docs.mjs`
+- blocking error で終了コードを返したい場合:
+  - `node scripts/traceability/check-docs.mjs --fail-on-blocking`
+- 要求文も一緒に見たい場合:
+  - `node scripts/traceability/check-docs.mjs --request "所定の時刻が来たら鳴るようにして欲しい"`
 
 ## 次のステップ
 次のリポジトリ作業では、この骨格の上で具体的なデモアプリ仕様を作成し、実装やレビューの作業が自然に追跡チェーンへ接続される状態を作ります。

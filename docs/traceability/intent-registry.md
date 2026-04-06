@@ -1,13 +1,14 @@
 # 意図レジストリ
 
-最終更新日: 2026-04-02
+最終更新日: 2026-04-04
 
 | intent_id | proposal_type | title | stage | enabler_proposal | feature_proposal | related_enablers | ui_spec | implementation_spec | status | updated_at |
 |---|---|---|---|---|---|---|---|---|---|---|
 | intent-000 | enabler | AI ネイティブなトレーサビリティ基盤 | implementation | docs/traceability/enabler-proposals/ep-intent-000-ai-native-traceability-scaffold.md |  |  |  | docs/traceability/implementation-specs/is-intent-000-repository-bootstrap.md | draft | 2026-03-30 |
-| intent-001 | feature | 業務要求からレビュー済みデプロイ準備までのフロー | proposal |  | docs/traceability/feature-proposals/fp-intent-001-business-request-to-reviewed-deployment-flow.md | intent-000 | docs/traceability/ui-specs/ui-intent-001-request-review-deploy-surface.md |  | draft | 2026-03-30 |
+| intent-001 | feature | 業務要求からレビュー済みデプロイ準備までのフロー | proposal |  | docs/traceability/feature-proposals/fp-intent-001-business-request-to-reviewed-deployment-flow.md | intent-000, intent-004 | docs/traceability/ui-specs/ui-intent-001-request-review-deploy-surface.md |  | draft | 2026-04-04 |
 | intent-002 | feature | フォーカスタイムタイマーのフロントエンド MVP | implementation |  | docs/traceability/feature-proposals/fp-intent-002-focus-time-timer-mvp.md | intent-000 | docs/traceability/ui-specs/ui-intent-002-focus-time-timer-screen.md | docs/traceability/implementation-specs/is-intent-002-focus-time-timer-skeleton-mvp.md | draft | 2026-03-30 |
 | intent-003 | enabler | OpenShift デモ向け GitOps デプロイとロールバック基盤 | implementation | docs/traceability/enabler-proposals/ep-intent-003-openshift-gitops-rollout-rollback-demo.md |  | intent-000, intent-001, intent-002 |  | docs/traceability/implementation-specs/is-intent-003-tekton-argocd-openshift-pipeline-demo.md | draft | 2026-04-02 |
+| intent-004 | enabler | Traceability チェックによる変更整合性ゲート | implementation | docs/traceability/enabler-proposals/ep-intent-004-traceability-check-gate.md |  | intent-000, intent-001, intent-003 |  | docs/traceability/implementation-specs/is-intent-004-traceability-check-gate.md | draft | 2026-04-04 |
 
 ## 段階の定義
 - `proposal`: 基盤提案 / 機能提案を策定またはレビュー中
